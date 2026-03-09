@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Name</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Dark (default) ── */
+    :root {
+      --bg:        #0e0b12;
+      --border:    #1e1828;
+      --text:      #a89ec0;
+      --dim:       #4e4568;
+      --heading:   #ede7f8;
+      --accent:    #e879a0;
+      --accent2:   #b85278;
+      --font-mono:  'DM Mono', monospace;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    /* ── Light ── */
+    html.light {
+      --bg:        #f8faff;
+      --border:    #d5ddf5;
+      --text:      #3a4a72;
+      --dim:       #8090b8;
+      --heading:   #141e3d;
+      --accent:    #c4507a;
+      --accent2:   #9e3d63;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.75;
+      font-weight: 300;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── Two-column layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      padding: 48px 36px 48px 40px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      transition: border-color 0.3s;
+    }
+
+    /* Name */
+    .name-block { line-height: 1.1; }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 0;
+    }
+
+    h1 .name-first {
+      font-family: 'Syne', var(--font-sans);
+      font-style: normal;
+      font-weight: 600;
+      color: var(--heading);
+      transition: color 0.3s;
+    }
+
+    h1 .name-last {
+      font-family: 'Syne', var(--font-sans);
+      font-weight: 600;
+      color: var(--heading);
+      transition: color 0.3s;
+    }
+
+    /* Tagline */
+    .tagline {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.7;
+      transition: color 0.3s;
+    }
+
+    /* Photo */
+    .avatar {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      min-height: 200px;
+      border-radius: 4px;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .avatar svg {
+      width: 36px;
+      height: 36px;
+      color: var(--dim);
+      stroke-width: 1;
+    }
+
+    /* Sidebar section */
+    .sidebar-section {}
+
+    .sidebar-label {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 10px;
+      transition: color 0.3s;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.15s;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .sidebar-link:hover { color: var(--accent); }
+
+    .sidebar-link .arrow {
+      font-size: 10px;
+      color: var(--dim);
+      transition: color 0.15s, transform 0.15s;
+    }
+
+    .sidebar-link:hover .arrow {
+      color: var(--accent);
+      transform: translate(1px, -1px);
+    }
+
+    /* Theme toggle at bottom of sidebar */
+    .sidebar-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-copy {
+      font-size: 9px;
+      color: var(--dim);
+      letter-spacing: 0.06em;
+    }
+
+    .sidebar-copy em { color: var(--accent); font-style: normal; }
+
+    #theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--dim);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+
+    #theme-toggle:hover { color: var(--heading); }
+    #theme-toggle svg { width: 13px; height: 13px; }
+
+    #icon-sun  { display: none; }
+    #icon-moon { display: block; }
+    html.light #icon-sun  { display: block; }
+    html.light #icon-moon { display: none; }
+
+    /* ── Main content ── */
+    .content {
+      padding: 48px 56px;
+    }
+
+    .content-section {
+      margin-bottom: 56px;
+    }
+
+    .content-label {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 20px;
+      transition: color 0.3s;
+    }
+
+    /* ── Project list ── */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-item {
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.2s;
+    }
+
+    .project-item:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .item-num {
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+      transition: color 0.3s;
+    }
+
+    .item-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .project-name {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--heading);
+      transition: color 0.2s;
+    }
+
+    .project-item:hover .project-name { color: var(--accent); }
+
+    .project-arrow {
+      font-size: 11px;
+      color: var(--dim);
+      transition: color 0.15s, transform 0.15s;
+    }
+
+    .project-item:hover .project-arrow {
+      color: var(--accent);
+      transform: translate(2px, -2px);
+    }
+
+    .project-desc {
+      font-size: 11.5px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 8px;
+      max-width: 560px;
+      transition: color 0.3s;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+
+    .tag {
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.04em;
+      transition: color 0.3s;
+    }
+
+    .tag + .tag::before {
+      content: ' · ';
+      color: var(--dim);
+    }
+
+    /* ── Inline editing ── */
+    [contenteditable] {
+      outline: none;
+      border-radius: 2px;
+      cursor: text;
+      padding: 1px 2px;
+      margin: -1px -2px;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+
+    [contenteditable]:hover { background: rgba(196, 80, 122, 0.07); }
+
+    [contenteditable]:focus {
+      background: rgba(196, 80, 122, 0.1);
+      box-shadow: 0 1px 0 0 var(--accent);
+    }
+
+    [contenteditable]:not(:focus)::after {
+      content: ' ✎';
+      font-size: 0.65em;
+      opacity: 0;
+      color: var(--accent);
+      transition: opacity 0.15s;
+    }
+
+    [contenteditable]:not(:focus):hover::after { opacity: 0.4; }
+
+    .project-item:has([contenteditable]:focus) .project-name { color: var(--heading) !important; }
+    .project-item:has([contenteditable]:focus) .project-arrow { color: var(--dim) !important; transform: none !important; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .sidebar  { animation: fadeUp 0.4s ease both; }
+    .content  { animation: fadeUp 0.4s ease 0.05s both; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Mobile ── */
+    @media (max-width: 680px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 36px 28px;
+      }
+
+      .content {
+        padding: 36px 28px;
+      }
+
+      h1 { font-size: 30px; }
+    }
+  </style>
+
+  <script>
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.add('light');
+    }
+  </script>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+
+    <!-- Name -->
+    <div class="name-block">
+      <h1>
+        <span class="name-first" contenteditable="true" spellcheck="false" data-key="name-first" data-singleline>First</span> <span class="name-last" contenteditable="true" spellcheck="false" data-key="name-last" data-singleline>Last</span>
+      </h1>
+    </div>
+
+    <!-- Tagline -->
+    <p class="tagline" contenteditable="true" spellcheck="false" data-key="bio">
+      software engineer passionate about building clean, performant systems. i work at the intersection of design and engineering.
+    </p>
+
+    <!-- Photo -->
+    <div class="avatar" id="about">
+      <!--
+        Replace with your photo:
+        <img src="your-photo.jpg" alt="Your Name" style="width:100%;height:100%;object-fit:cover;">
+      -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+    </div>
+
+    <!-- Contact / Elsewhere -->
+    <div class="sidebar-section" id="contact">
+      <div class="sidebar-label">other synapses</div>
+      <div class="sidebar-links">
+        <a class="sidebar-link" href="mailto:andreakim@uchicago.edu">
+          <span>email</span>
+          <span class="arrow">↗</span>
+        </a>
+        <a class="sidebar-link" href="https://www.linkedin.com/in/andrea-kim-383b08259/" target="_blank" rel="noopener">
+          <span>linkedin</span>
+          <span class="arrow">↗</span>
+        </a>
+        <a class="sidebar-link" href="https://github.com/aandreakim" target="_blank" rel="noopener">
+          <span>github</span>
+          <span class="arrow">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer + toggle -->
+    <div class="sidebar-footer">
+      <span class="sidebar-copy">
+        <em contenteditable="true" spellcheck="false" data-key="footer-name" data-singleline>yourname</em>
+        &mdash;
+        <em contenteditable="true" spellcheck="false" data-key="footer-year" data-singleline>2025</em>
+      </span>
+      <button id="theme-toggle" aria-label="Toggle theme">
+        <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ── Main content ── -->
+  <main class="content">
+
+    <div class="content-section" id="projects">
+      <div class="content-label">projects</div>
+      <div class="project-list">
+
+        <a class="project-item" href="https://github.com/yourname/project-one" target="_blank" rel="noopener">
+          <div class="item-num">01</div>
+          <div class="item-title-row">
+            <span class="project-name" contenteditable="true" spellcheck="false" data-key="p1-name" data-singleline>project-one</span>
+            <span class="project-arrow">↗</span>
+          </div>
+          <p class="project-desc" contenteditable="true" spellcheck="false" data-key="p1-desc">a short description of what this project does and why it's interesting. keep it punchy.</p>
+          <div class="project-tags">
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p1-t1" data-singleline>TypeScript</span>
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p1-t2" data-singleline>Next.js</span>
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p1-t3" data-singleline>Postgres</span>
+          </div>
+        </a>
+
+        <a class="project-item" href="https://github.com/yourname/project-two" target="_blank" rel="noopener">
+          <div class="item-num">02</div>
+          <div class="item-title-row">
+            <span class="project-name" contenteditable="true" spellcheck="false" data-key="p2-name" data-singleline>project-two</span>
+            <span class="project-arrow">↗</span>
+          </div>
+          <p class="project-desc" contenteditable="true" spellcheck="false" data-key="p2-desc">another cool thing you built. highlight the technical challenge or the impact it had.</p>
+          <div class="project-tags">
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p2-t1" data-singleline>Python</span>
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p2-t2" data-singleline>FastAPI</span>
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p2-t3" data-singleline>Docker</span>
+          </div>
+        </a>
+
+        <a class="project-item" href="https://github.com/yourname/project-three" target="_blank" rel="noopener">
+          <div class="item-num">03</div>
+          <div class="item-title-row">
+            <span class="project-name" contenteditable="true" spellcheck="false" data-key="p3-name" data-singleline>project-three</span>
+            <span class="project-arrow">↗</span>
+          </div>
+          <p class="project-desc" contenteditable="true" spellcheck="false" data-key="p3-desc">third project — open source, a side project, or something you're proud of shipping.</p>
+          <div class="project-tags">
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p3-t1" data-singleline>Rust</span>
+            <span class="tag" contenteditable="true" spellcheck="false" data-key="p3-t2" data-singleline>WebAssembly</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+  // ── Theme toggle ──
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    const isLight = document.documentElement.classList.toggle('light');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  });
+
+  // ── Inline editing ──
+  (function () {
+    const PREFIX = 'site_';
+
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const saved = localStorage.getItem(PREFIX + el.dataset.key);
+      if (saved !== null) el.innerText = saved;
+    });
+
+    document.addEventListener('input', e => {
+      const el = e.target;
+      if (!el.isContentEditable || !el.dataset.key) return;
+      localStorage.setItem(PREFIX + el.dataset.key, el.innerText);
+    });
+
+    document.addEventListener('keydown', e => {
+      const el = e.target;
+      if (!el.isContentEditable) return;
+      if (e.key === 'Escape') { el.blur(); return; }
+      if (e.key === 'Enter' && el.hasAttribute('data-singleline')) {
+        e.preventDefault();
+        el.blur();
+      }
+    });
+
+    // Prevent link navigation while editing
+    document.querySelectorAll('.project-item, .sidebar-link').forEach(el => {
+      el.addEventListener('click', e => {
+        if (e.target.isContentEditable || e.target.closest('[contenteditable]')) {
+          e.preventDefault();
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
