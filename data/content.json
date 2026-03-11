@@ -1,0 +1,34 @@
+{
+  "name_first": "Andrea",
+  "name_last": "Kim",
+  "bio": "mapping the space between neurons and everything else. building tools to listen to the brain and speak its language.",
+  "footer_name": "andrea",
+  "footer_year": "2026",
+  "projects": [
+    {
+      "name": "project-one",
+      "url": "https://github.com/yourname/project-one",
+      "description": "a short description of what this project does and why it's interesting. keep it punchy.",
+      "tags": ["TypeScript", "Next.js", "Postgres"]
+    },
+    {
+      "name": "project-two",
+      "url": "https://github.com/yourname/project-two",
+      "description": "another cool thing you built. highlight the technical challenge or the impact it had.",
+      "tags": ["Python", "FastAPI", "Docker"]
+    },
+    {
+      "name": "project-three",
+      "url": "https://github.com/yourname/project-three",
+      "description": "third project — open source, a side project, or something you're proud of shipping.",
+      "tags": ["Rust", "WebAssembly"]
+    }
+  ],
+  "sprints": [
+    { "title": "sprint title", "date": "week of ·", "url": "#" },
+    { "title": "sprint title", "date": "week of ·", "url": "#" },
+    { "title": "sprint title", "date": "week of ·", "url": "#" },
+    { "title": "sprint title", "date": "week of ·", "url": "#" },
+    { "title": "sprint title", "date": "week of ·", "url": "#" }
+  ]
+}

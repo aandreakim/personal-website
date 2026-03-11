@@ -1,0 +1,8 @@
+[build]
+  publish = "."
+
+# Needed for Decap CMS admin panel routing
+[[redirects]]
+  from = "/admin"
+  to   = "/admin/index.html"
+  status = 200
