@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name</title>
+  <title>Andrea Kim</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -381,72 +381,12 @@
       transform: translate(2px, -2px);
     }
 
-    .sprint-meta {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
     .sprint-date {
       font-size: 11px;
       color: var(--dim);
       font-family: var(--font-mono);
       transition: color 0.3s;
     }
-
-    .sprint-url-field {
-      font-size: 10px;
-      color: var(--dim);
-      font-family: var(--font-mono);
-      opacity: 0.55;
-      transition: opacity 0.2s, color 0.3s;
-      max-width: 340px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .sprint-url-field:hover,
-    .sprint-url-field:focus { opacity: 1; }
-
-    .sprint-url-field::before {
-      content: 'url → ';
-      color: var(--accent);
-      opacity: 0.5;
-      font-size: 9px;
-      pointer-events: none;
-    }
-
-    /* ── Inline editing ── */
-    [contenteditable] {
-      outline: none;
-      border-radius: 2px;
-      cursor: text;
-      padding: 1px 2px;
-      margin: -1px -2px;
-      transition: background 0.15s, box-shadow 0.15s;
-    }
-
-    [contenteditable]:hover { background: rgba(196, 80, 122, 0.07); }
-
-    [contenteditable]:focus {
-      background: rgba(196, 80, 122, 0.1);
-      box-shadow: 0 1px 0 0 var(--accent);
-    }
-
-    [contenteditable]:not(:focus)::after {
-      content: ' ✎';
-      font-size: 0.65em;
-      opacity: 0;
-      color: var(--accent);
-      transition: opacity 0.15s;
-    }
-
-    [contenteditable]:not(:focus):hover::after { opacity: 0.4; }
-
-    .project-item:has([contenteditable]:focus) .project-name { color: var(--heading) !important; }
-    .project-item:has([contenteditable]:focus) .project-arrow { color: var(--dim) !important; transform: none !important; }
 
     /* ── Animations ── */
     @keyframes fadeUp {
@@ -500,12 +440,12 @@
     <!-- Name -->
     <div class="name-block">
       <h1>
-        <span class="name-first" contenteditable="true" spellcheck="false" data-key="name-first" data-singleline>First</span> <span class="name-last" contenteditable="true" spellcheck="false" data-key="name-last" data-singleline>Last</span>
+        <span class="name-first">Andrea</span> <span class="name-last">Kim</span>
       </h1>
     </div>
 
     <!-- Tagline -->
-    <p class="tagline" contenteditable="true" spellcheck="false" data-key="bio">
+    <p class="tagline">
       mapping the space between neurons and everything else. building tools to listen to the brain and speak its language.
     </p>
 
@@ -513,7 +453,7 @@
     <div class="avatar" id="about">
       <!--
         Replace with your photo:
-        <img src="your-photo.jpg" alt="Your Name" style="width:100%;height:100%;object-fit:cover;">
+        <img src="your-photo.jpg" alt="Andrea Kim" style="width:100%;height:100%;object-fit:cover;">
       -->
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <circle cx="12" cy="8" r="4"/>
@@ -521,7 +461,7 @@
       </svg>
     </div>
 
-    <!-- Contact / Elsewhere -->
+    <!-- Contact -->
     <div class="sidebar-section" id="contact">
       <div class="sidebar-label">other synapses</div>
       <div class="sidebar-links">
@@ -543,9 +483,7 @@
     <!-- Footer + toggle -->
     <div class="sidebar-footer">
       <span class="sidebar-copy">
-        <em contenteditable="true" spellcheck="false" data-key="footer-name" data-singleline>yourname</em>
-        &mdash;
-        <em contenteditable="true" spellcheck="false" data-key="footer-year" data-singleline>2025</em>
+        <em>andrea</em> &mdash; <em>2026</em>
       </span>
       <button id="theme-toggle" aria-label="Toggle theme">
         <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -569,6 +507,7 @@
       <button class="tab" data-tab="neurogenesis">inducing neurogenesis</button>
     </div>
 
+    <!-- ── Projects ── -->
     <div class="content-section" id="projects">
       <div class="content-label">projects</div>
       <div class="project-list">
@@ -576,41 +515,41 @@
         <a class="project-item" href="https://github.com/yourname/project-one" target="_blank" rel="noopener">
           <div class="item-num">01</div>
           <div class="item-title-row">
-            <span class="project-name" contenteditable="true" spellcheck="false" data-key="p1-name" data-singleline>project-one</span>
+            <span class="project-name">project-one</span>
             <span class="project-arrow">↗</span>
           </div>
-          <p class="project-desc" contenteditable="true" spellcheck="false" data-key="p1-desc">a short description of what this project does and why it's interesting. keep it punchy.</p>
+          <p class="project-desc">a short description of what this project does and why it's interesting. keep it punchy.</p>
           <div class="project-tags">
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p1-t1" data-singleline>TypeScript</span>
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p1-t2" data-singleline>Next.js</span>
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p1-t3" data-singleline>Postgres</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Next.js</span>
+            <span class="tag">Postgres</span>
           </div>
         </a>
 
         <a class="project-item" href="https://github.com/yourname/project-two" target="_blank" rel="noopener">
           <div class="item-num">02</div>
           <div class="item-title-row">
-            <span class="project-name" contenteditable="true" spellcheck="false" data-key="p2-name" data-singleline>project-two</span>
+            <span class="project-name">project-two</span>
             <span class="project-arrow">↗</span>
           </div>
-          <p class="project-desc" contenteditable="true" spellcheck="false" data-key="p2-desc">another cool thing you built. highlight the technical challenge or the impact it had.</p>
+          <p class="project-desc">another cool thing you built. highlight the technical challenge or the impact it had.</p>
           <div class="project-tags">
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p2-t1" data-singleline>Python</span>
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p2-t2" data-singleline>FastAPI</span>
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p2-t3" data-singleline>Docker</span>
+            <span class="tag">Python</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">Docker</span>
           </div>
         </a>
 
         <a class="project-item" href="https://github.com/yourname/project-three" target="_blank" rel="noopener">
           <div class="item-num">03</div>
           <div class="item-title-row">
-            <span class="project-name" contenteditable="true" spellcheck="false" data-key="p3-name" data-singleline>project-three</span>
+            <span class="project-name">project-three</span>
             <span class="project-arrow">↗</span>
           </div>
-          <p class="project-desc" contenteditable="true" spellcheck="false" data-key="p3-desc">third project — open source, a side project, or something you're proud of shipping.</p>
+          <p class="project-desc">third project — open source, a side project, or something you're proud of shipping.</p>
           <div class="project-tags">
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p3-t1" data-singleline>Rust</span>
-            <span class="tag" contenteditable="true" spellcheck="false" data-key="p3-t2" data-singleline>WebAssembly</span>
+            <span class="tag">Rust</span>
+            <span class="tag">WebAssembly</span>
           </div>
         </a>
 
@@ -621,69 +560,54 @@
     <div class="content-section" id="neurogenesis" style="display:none;">
       <div class="sprint-list">
 
-        <!-- Sprint 01 -->
+        <!-- Sprint 01 — edit title, date, and href directly in this file -->
         <div class="sprint-item">
           <div class="sprint-num">01</div>
-          <a class="sprint-link" id="s1-link" href="#" target="_blank" rel="noopener">
-            <span class="sprint-title" contenteditable="true" spellcheck="false" data-key="s1-title" data-singleline>sprint title</span>
+          <a class="sprint-link" href="#" target="_blank" rel="noopener">
+            <span class="sprint-title">sprint title</span>
             <span class="sprint-arrow">↗</span>
           </a>
-          <div class="sprint-meta">
-            <span class="sprint-date" contenteditable="true" spellcheck="false" data-key="s1-date" data-singleline>week of ·</span>
-            <span class="sprint-url-field" contenteditable="true" spellcheck="false" data-key="s1-url" data-singleline data-url-for="s1-link">paste link here</span>
-          </div>
+          <div class="sprint-date">week of ·</div>
         </div>
 
         <!-- Sprint 02 -->
         <div class="sprint-item">
           <div class="sprint-num">02</div>
-          <a class="sprint-link" id="s2-link" href="#" target="_blank" rel="noopener">
-            <span class="sprint-title" contenteditable="true" spellcheck="false" data-key="s2-title" data-singleline>sprint title</span>
+          <a class="sprint-link" href="#" target="_blank" rel="noopener">
+            <span class="sprint-title">sprint title</span>
             <span class="sprint-arrow">↗</span>
           </a>
-          <div class="sprint-meta">
-            <span class="sprint-date" contenteditable="true" spellcheck="false" data-key="s2-date" data-singleline>week of ·</span>
-            <span class="sprint-url-field" contenteditable="true" spellcheck="false" data-key="s2-url" data-singleline data-url-for="s2-link">paste link here</span>
-          </div>
+          <div class="sprint-date">week of ·</div>
         </div>
 
         <!-- Sprint 03 -->
         <div class="sprint-item">
           <div class="sprint-num">03</div>
-          <a class="sprint-link" id="s3-link" href="#" target="_blank" rel="noopener">
-            <span class="sprint-title" contenteditable="true" spellcheck="false" data-key="s3-title" data-singleline>sprint title</span>
+          <a class="sprint-link" href="#" target="_blank" rel="noopener">
+            <span class="sprint-title">sprint title</span>
             <span class="sprint-arrow">↗</span>
           </a>
-          <div class="sprint-meta">
-            <span class="sprint-date" contenteditable="true" spellcheck="false" data-key="s3-date" data-singleline>week of ·</span>
-            <span class="sprint-url-field" contenteditable="true" spellcheck="false" data-key="s3-url" data-singleline data-url-for="s3-link">paste link here</span>
-          </div>
+          <div class="sprint-date">week of ·</div>
         </div>
 
         <!-- Sprint 04 -->
         <div class="sprint-item">
           <div class="sprint-num">04</div>
-          <a class="sprint-link" id="s4-link" href="#" target="_blank" rel="noopener">
-            <span class="sprint-title" contenteditable="true" spellcheck="false" data-key="s4-title" data-singleline>sprint title</span>
+          <a class="sprint-link" href="#" target="_blank" rel="noopener">
+            <span class="sprint-title">sprint title</span>
             <span class="sprint-arrow">↗</span>
           </a>
-          <div class="sprint-meta">
-            <span class="sprint-date" contenteditable="true" spellcheck="false" data-key="s4-date" data-singleline>week of ·</span>
-            <span class="sprint-url-field" contenteditable="true" spellcheck="false" data-key="s4-url" data-singleline data-url-for="s4-link">paste link here</span>
-          </div>
+          <div class="sprint-date">week of ·</div>
         </div>
 
         <!-- Sprint 05 -->
         <div class="sprint-item">
           <div class="sprint-num">05</div>
-          <a class="sprint-link" id="s5-link" href="#" target="_blank" rel="noopener">
-            <span class="sprint-title" contenteditable="true" spellcheck="false" data-key="s5-title" data-singleline>sprint title</span>
+          <a class="sprint-link" href="#" target="_blank" rel="noopener">
+            <span class="sprint-title">sprint title</span>
             <span class="sprint-arrow">↗</span>
           </a>
-          <div class="sprint-meta">
-            <span class="sprint-date" contenteditable="true" spellcheck="false" data-key="s5-date" data-singleline>week of ·</span>
-            <span class="sprint-url-field" contenteditable="true" spellcheck="false" data-key="s5-url" data-singleline data-url-for="s5-link">paste link here</span>
-          </div>
+          <div class="sprint-date">week of ·</div>
         </div>
 
       </div>
@@ -724,54 +648,6 @@
     const isLight = document.documentElement.classList.toggle('light');
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
   });
-
-  // ── Inline editing ──
-  (function () {
-    const PREFIX = 'site_';
-
-    document.querySelectorAll('[data-key]').forEach(el => {
-      const saved = localStorage.getItem(PREFIX + el.dataset.key);
-      if (saved !== null) el.innerText = saved;
-    });
-
-    document.addEventListener('input', e => {
-      const el = e.target;
-      if (!el.isContentEditable || !el.dataset.key) return;
-      localStorage.setItem(PREFIX + el.dataset.key, el.innerText);
-    });
-
-    document.addEventListener('keydown', e => {
-      const el = e.target;
-      if (!el.isContentEditable) return;
-      if (e.key === 'Escape') { el.blur(); return; }
-      if (e.key === 'Enter' && el.hasAttribute('data-singleline')) {
-        e.preventDefault();
-        el.blur();
-      }
-    });
-
-    // Prevent link navigation while editing
-    document.querySelectorAll('.project-item, .sidebar-link, .sprint-link').forEach(el => {
-      el.addEventListener('click', e => {
-        if (e.target.isContentEditable || e.target.closest('[contenteditable]')) {
-          e.preventDefault();
-        }
-      });
-    });
-
-    // Sync sprint URL fields → link hrefs
-    document.querySelectorAll('[data-url-for]').forEach(urlField => {
-      const link = document.getElementById(urlField.dataset.urlFor);
-      if (!link) return;
-      const savedUrl = localStorage.getItem(PREFIX + urlField.dataset.key);
-      if (savedUrl && savedUrl !== 'paste link here') link.href = savedUrl;
-      urlField.addEventListener('input', () => {
-        const val = urlField.innerText.trim();
-        link.href = val || '#';
-        localStorage.setItem(PREFIX + urlField.dataset.key, val);
-      });
-    });
-  })();
 </script>
 
 </body>
