@@ -449,7 +449,7 @@
 
     <!-- Photo -->
     <div class="avatar" id="about">
-      <img src="./images/photo.jpg" alt="Andrea Kim" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+      <img src="./images/photo.jpg" alt="Andrea Kim" style="width:100%;height:100%;object-fit:cover;object-position:center center;">
     </div>
 
     <!-- Contact -->
@@ -518,6 +518,12 @@
   fetch('./data/content.json')
     .then(r => r.json())
     .then(data => {
+      // Photo position
+      const photo = document.querySelector('.avatar img');
+      if (photo && data.photo_x !== undefined) {
+        photo.style.objectPosition = `${data.photo_x}% ${data.photo_y}%`;
+      }
+
       // Basic fields
       document.querySelector('.name-first').textContent  = data.name_first;
       document.querySelector('.name-last').textContent   = data.name_last;

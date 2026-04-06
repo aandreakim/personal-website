@@ -22,6 +22,26 @@ collections:
           - { label: "Footer Name", name: "footer_name", widget: "string" }
           - { label: "Footer Year",  name: "footer_year", widget: "string" }
 
+          - label: "Photo — Horizontal Position"
+            name: "photo_x"
+            widget: "number"
+            value_type: "int"
+            min: 0
+            max: 100
+            step: 1
+            default: 35
+            hint: "0 = far left, 50 = center, 100 = far right"
+
+          - label: "Photo — Vertical Position"
+            name: "photo_y"
+            value_type: "int"
+            widget: "number"
+            min: 0
+            max: 100
+            step: 1
+            default: 35
+            hint: "0 = top of photo, 50 = middle, 100 = bottom"
+
           - label: "Projects"
             name: "projects"
             widget: "list"
