@@ -42,6 +42,16 @@ collections:
             default: 35
             hint: "0 = top of photo, 50 = middle, 100 = bottom"
 
+          - label: "Photo — Zoom"
+            name: "photo_zoom"
+            widget: "number"
+            value_type: "float"
+            min: 1.0
+            max: 2.0
+            step: 0.05
+            default: 1.15
+            hint: "1.0 = no zoom, 1.2 = zoomed in 20%. Use to crop edges."
+
           - label: "Projects"
             name: "projects"
             widget: "list"

@@ -518,10 +518,14 @@
   fetch('./data/content.json')
     .then(r => r.json())
     .then(data => {
-      // Photo position
+      // Photo position + zoom
       const photo = document.querySelector('.avatar img');
       if (photo && data.photo_x !== undefined) {
         photo.style.objectPosition = `${data.photo_x}% ${data.photo_y}%`;
+      }
+      if (photo && data.photo_zoom !== undefined && data.photo_zoom !== 1) {
+        photo.style.transform = `scale(${data.photo_zoom})`;
+        photo.style.transformOrigin = `${data.photo_x ?? 50}% ${data.photo_y ?? 50}%`;
       }
 
       // Basic fields
