@@ -424,6 +424,9 @@
     }
   </style>
 
+  <!-- Netlify Identity widget — handles login/invite/recovery tokens -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
   <script>
     if (localStorage.getItem('theme') === 'light') {
       document.documentElement.classList.add('light');
@@ -600,6 +603,17 @@
     const isLight = document.documentElement.classList.toggle('light');
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
   });
+
+  // ── Netlify Identity: redirect to /admin after login ──
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on('init', user => {
+      if (!user) {
+        window.netlifyIdentity.on('login', () => {
+          document.location.href = '/admin/';
+        });
+      }
+    });
+  }
 </script>
 
 </body>
