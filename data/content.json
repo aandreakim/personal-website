@@ -5,39 +5,29 @@
   "name_last": "Kim",
   "photo_x": 35,
   "photo_y": 35,
-  "footer_name": "andrea",
+  "footer_name": "AK",
   "sprints": [
     {
-      "title": "sprint title",
-      "date": "week of ·",
-      "url": "#"
+      "title": "GeneHackers (UChicago iGEM)",
+      "date": "Wet Lab Researcher",
+      "url": "https://andreak.im/"
     },
     {
-      "title": "sprint title",
-      "date": "week of ·",
-      "url": "#"
+      "title": "Tian Research Group",
+      "date": "Computational Researcher",
+      "url": "https://andreak.im/"
     },
     {
-      "title": "sprint title",
-      "date": "week of ·",
-      "url": "#"
-    },
-    {
-      "title": "sprint title",
-      "date": "week of ·",
-      "url": "#"
-    },
-    {
-      "title": "sprint title",
-      "date": "week of ·",
-      "url": "#"
+      "title": "University of Suwon",
+      "date": "Wet Lab Researcher",
+      "url": "https://andreak.im/"
     }
   ],
   "projects": [
     {
       "name": "Targeting TNFRSF1A Gene by siRNA Efficiently Blocks Extracranial Metastasis of Brain Cancer in 3D Bioprinted Tissue Model",
-      "url": "https://andreak.im/10.34614/2022IYRC27",
-      "description": "Best STEM Paper Award - International Young Researchers' Conference ",
+      "url": "https://past.the-iyrc.org/kim-andrea.html",
+      "description": "International Young Researchers' Conference ",
       "tags": [
         "TypeScript",
         "Next.js",
@@ -45,9 +35,9 @@
       ]
     },
     {
-      "name": "project-two",
-      "url": "https://github.com/yourname/project-two",
-      "description": "another cool thing you built. highlight the technical challenge or the impact it had.",
+      "name": "A Novel In Vitro Blood-Brain Barrier Model Using 3D Bioprinter: A Pilot Study",
+      "url": "https://doi.org/10.59720/22-168",
+      "description": "Journal of Emerging Investigators, Vol. 6",
       "tags": [
         "Python",
         "FastAPI",
@@ -55,9 +45,9 @@
       ]
     },
     {
-      "name": "project-three",
-      "url": "https://github.com/yourname/project-three",
-      "description": "third project — open source, a side project, or something you're proud of shipping.",
+      "name": "Designing a Cancer-Specific Cell-Penetrating Peptide for the Efficient Delivery of siRNA into Cancer Cells",
+      "url": "https://drive.google.com/file/d/18Pggf3LcEnsNtQ8QqrCQmpPiMJpRXLl9/view?usp=sharing",
+      "description": "iGEM 2021",
       "tags": [
         "Rust",
         "WebAssembly"
