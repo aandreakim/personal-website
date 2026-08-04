@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andrea Kim</title>
+  <meta name="description" content="mapping the space between the mind and everything else." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0a0a0b;
+      --text:    #ececec;
+      --dim:     rgba(236,236,236,0.42);
+      --dimmer:  rgba(236,236,236,0.30);
+      --border:  rgba(236,236,236,0.10);
+      --accent:  #7B82F0;
+      --accent2: rgba(123,130,240,0.07);
+      --pad:     clamp(1.5rem, 6vw, 7rem);
+      --sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    html.light {
+      --bg:      #fbfbf9;
+      --text:    #111112;
+      --dim:     rgba(17,17,18,0.52);
+      --dimmer:  rgba(17,17,18,0.40);
+      --border:  rgba(17,17,18,0.12);
+      --accent:  #5057d5;
+      --accent2: rgba(80,87,213,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* subtle noise grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.5;
+    }
+
+    /* ── Canvas — full-page fixed background, visible the whole scroll ── */
+    #neural-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .page { position: relative; z-index: 2; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.4rem var(--pad);
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(16px);
+    }
+
+    .logo {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav-links { display: flex; gap: 1.75rem; align-items: center; }
+
+    .nav-links a {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+      padding-bottom: 2px;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.25s;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    #theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--dim);
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+    #theme-toggle:hover { color: var(--accent); }
+    #theme-toggle svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
+    #icon-sun { display: none; }
+    #icon-moon { display: block; }
+    html.light #icon-sun { display: block; }
+    html.light #icon-moon { display: none; }
+
+    /* ── Hero — sits in the flow, no full-viewport lock ── */
+    .hero {
+      padding: clamp(4rem, 14vh, 9rem) var(--pad) clamp(4rem, 12vh, 7rem);
+      max-width: 68rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-display {
+      font-size: clamp(2.5rem, 7.5vw, 5.5rem);
+      font-weight: 600;
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+      margin-bottom: 2rem;
+    }
+
+    .hero-display em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      color: var(--dim);
+      line-height: 1.55;
+      max-width: 34rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-ghost {
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 3px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Ticker ── */
+    .ticker {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 0.9rem 0;
+    }
+
+    .ticker-track {
+      display: flex;
+      white-space: nowrap;
+      width: max-content;
+      animation: ticker 28s linear infinite;
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 1.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      color: var(--dimmer);
+      text-transform: uppercase;
+    }
+
+    .ticker-item .dot {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── Sections — all visible, one continuous scroll ── */
+    .block {
+      padding: clamp(3rem, 8vh, 5rem) var(--pad);
+      border-top: 1px solid var(--border);
+      scroll-margin-top: 4.5rem;
+    }
+
+    .block:first-of-type { border-top: none; }
+
+    .block-head {
+      display: flex;
+      align-items: baseline;
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .block-head span {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.1em;
+    }
+
+    .block-head h2 {
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Entry list ── */
+    .list { list-style: none; }
+
+    .list li { border-bottom: 1px solid var(--border); }
+    .list li:first-child { border-top: 1px solid var(--border); }
+
+    .list a, .list .row {
+      display: grid;
+      grid-template-columns: 3rem 1fr auto;
+      align-items: start;
+      gap: 1.5rem;
+      padding: 1.6rem 0;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+    }
+
+    .list a::before {
+      content: '';
+      position: absolute;
+      left: calc(-1 * var(--pad)); right: calc(-1 * var(--pad));
+      top: 0; bottom: 0;
+      background: var(--accent2);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .list a:hover::before { opacity: 1; }
+
+    .idx {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      padding-top: 0.35rem;
+      letter-spacing: 0.08em;
+    }
+
+    .body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 46rem;
+    }
+
+    .title {
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      font-weight: 400;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+
+    .meta {
+      font-size: 0.8rem;
+      color: var(--dim);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.2rem 0.6rem;
+    }
+
+    .arrow {
+      font-size: 0.9rem;
+      color: var(--dim);
+      padding-top: 0.3rem;
+      transition: color 0.15s, transform 0.15s;
+    }
+
+    .list a:hover .arrow { color: var(--accent); transform: translate(2px,-2px); }
+
+    /* ── About ── */
+    .about {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: clamp(2rem, 6vw, 5rem);
+      align-items: start;
+    }
+
+    .about-photo {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      object-position: 50% 15%;
+      display: block;
+      filter: grayscale(15%);
+      background: rgba(236,236,236,0.05);
+    }
+
+    .about h3 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.25rem;
+    }
+
+    .affil {
+      font-size: 0.9rem;
+      color: var(--dim);
+      margin-bottom: 1.5rem;
+    }
+
+    .bio {
+      line-height: 1.7;
+      color: var(--dim);
+      max-width: 32rem;
+      margin-bottom: 2rem;
+    }
+
+    .links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .links a {
+      font-size: 0.85rem;
+      color: var(--dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .links a:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .list a, .list .row { grid-template-columns: 2rem 1fr auto; gap: 1rem; }
+      .about { grid-template-columns: 1fr; }
+      .about-photo { max-width: 220px; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: 0.75rem; }
+      .logo { font-size: 0.7rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .ticker-track { animation: none; }
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Full-page neural network canvas -->
+<canvas id="neural-canvas"></canvas>
+
+<div class="page">
+
+  <nav>
+    <div class="logo">ANDREA KIM</div>
+    <div class="nav-links">
+      <a href="#hero" class="active">Home</a>
+      <a href="#work">what</a>
+      <a href="#research">where</a>
+      <a href="#about">who</a>
+      <button id="theme-toggle" aria-label="Toggle theme">
+        <svg id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="hero-eyebrow">hi, i'm</div>
+    <h1 class="hero-display">
+      building tools that<br>
+      <em>speak</em> the brain's<br>
+      language.
+    </h1>
+    <p class="hero-sub">mapping the space between the mind and everything else.</p>
+    <a href="#about" class="btn-ghost">About me</a>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
+  <section class="block" id="work">
+    <div class="block-head"><span>00 /</span><h2>what</h2></div>
+    <ul class="list">
+      <li>
+        <a href="https://past.the-iyrc.org/kim-andrea.html" target="_blank" rel="noopener">
+          <span class="idx">00</span>
+          <span class="body">
+            <span class="title">Targeting TNFRSF1A Gene by siRNA Efficiently Blocks Extracranial Metastasis of Brain Cancer in 3D Bioprinted Tissue Model</span>
+            <span class="meta">International Young Researchers' Conference</span>
+            <span class="tags"><span class="tag">siRNA</span><span class="tag">3D Bioprinting</span><span class="tag">Brain Cancer</span></span>
+          </span>
+          <span class="arrow">↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://doi.org/10.59720/22-168" target="_blank" rel="noopener">
+          <span class="idx">01</span>
+          <span class="body">
+            <span class="title">A Novel In Vitro Blood-Brain Barrier Model Using 3D Bioprinter: A Pilot Study</span>
+            <span class="meta">Journal of Emerging Investigators, Vol. 6</span>
+            <span class="tags"><span class="tag">3D Bioprinting</span><span class="tag">Blood-Brain Barrier</span><span class="tag">In Vitro Model</span></span>
+          </span>
+          <span class="arrow">↗</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://drive.google.com/file/d/18Pggf3LcEnsNtQ8QqrCQmpPiMJpRXLl9/view?usp=sharing" target="_blank" rel="noopener">
+          <span class="idx">02</span>
+          <span class="body">
+            <span class="title">Designing a Cancer-Specific Cell-Penetrating Peptide for the Efficient Delivery of siRNA into Cancer Cells</span>
+            <span class="meta">iGEM 2021</span>
+            <span class="tags"><span class="tag">siRNA Delivery</span><span class="tag">Cell-Penetrating Peptide</span><span class="tag">Cancer Biology</span></span>
+          </span>
+          <span class="arrow">↗</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="block" id="research">
+    <div class="block-head"><span>01 /</span><h2>where</h2></div>
+    <ul class="list">
+      <li>
+        <div class="row">
+          <span class="idx">00</span>
+          <span class="body">
+            <span class="title">GeneHackers — UChicago iGEM</span>
+            <span class="meta">Wet Lab Researcher</span>
+          </span>
+          <span></span>
+        </div>
+      </li>
+      <li>
+        <div class="row">
+          <span class="idx">01</span>
+          <span class="body">
+            <span class="title">Tian Research Group</span>
+            <span class="meta">Computational Researcher</span>
+          </span>
+          <span></span>
+        </div>
+      </li>
+      <li>
+        <div class="row">
+          <span class="idx">02</span>
+          <span class="body">
+            <span class="title">University of Suwon</span>
+            <span class="meta">Wet Lab Researcher</span>
+          </span>
+          <span></span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="block" id="about">
+    <div class="block-head"><span>02 /</span><h2>who</h2></div>
+    <div class="about">
+      <img class="about-photo" src="./images/photo.jpg" alt="Andrea Kim">
+      <div>
+        <h3>Andrea<br>Kim</h3>
+        <p class="affil">neuroscience &amp; computational biology @ uchicago</p>
+        <p class="bio">mapping the space between the mind and everything else. building tools to listen to the brain and speak its language.</p>
+        <div class="links">
+          <a href="mailto:andreakim@uchicago.edu">Email</a>
+          <a href="https://www.linkedin.com/in/andrea-kim-383b08259/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/aandreakim" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ── Ticker ──
+  const items = [
+    'Neuroscience', 'siRNA Delivery', 'UChicago', '3D Bioprinting',
+    'Blood-Brain Barrier', 'iGEM', 'Computational Biology', 'Brain Cancer Research',
+    'Cell-Penetrating Peptides', 'Wet Lab', 'In Vitro Models', 'Gene Targeting'
+  ];
+  const track = document.getElementById('ticker-track');
+  track.innerHTML = [...items, ...items].map(t =>
+    `<span class="ticker-item"><span class="dot"></span>${t}</span>`
+  ).join('');
+
+  // ── Neural network — cursor-interactive, persists across the whole scroll ──
+  const canvas = document.getElementById('neural-canvas');
+  const ctx    = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Canvas is fixed, so client coords map directly
+  const mouse = { x: null, y: null };
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+  const COUNT     = 28;
+  const MAX_DIST  = 110;
+  const CURSOR_R  = 180;
+  const REPEL_R   = 70;
+  const CLUSTER_R = 0.3;
+  const C         = [123, 130, 240];
+  const particles = [];
+
+  class P {
+    constructor() { this.init(); }
+    init() {
+      const angle = Math.random() * Math.PI * 2;
+      const r     = Math.random() * Math.min(canvas.width, canvas.height) * CLUSTER_R;
+      this.x  = canvas.width  * 0.68 + Math.cos(angle) * r;
+      this.y  = canvas.height * 0.50 + Math.sin(angle) * r;
+      this.vx = (Math.random() - 0.5) * 0.42;
+      this.vy = (Math.random() - 0.5) * 0.42;
+      this.bvx = this.vx;
+      this.bvy = this.vy;
+      this.r  = Math.random() * 1.6 + 1;
+    }
+    tick() {
+      const cx  = canvas.width  * 0.68;
+      const cy  = canvas.height * 0.50;
+      const max = Math.min(canvas.width, canvas.height) * CLUSTER_R;
+
+      const distC = Math.hypot(this.x - cx, this.y - cy);
+      if (distC > max * 0.7) {
+        this.vx += (cx - this.x) / distC * 0.04;
+        this.vy += (cy - this.y) / distC * 0.04;
+      }
+
+      if (mouse.x !== null) {
+        const dx = this.x - mouse.x, dy = this.y - mouse.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < REPEL_R && dist > 0) {
+          const force = (REPEL_R - dist) / REPEL_R * 0.9;
+          this.vx += (dx / dist) * force;
+          this.vy += (dy / dist) * force;
+        }
+      }
+
+      this.vx += (this.bvx - this.vx) * 0.025;
+      this.vy += (this.bvy - this.vy) * 0.025;
+
+      const spd = Math.hypot(this.vx, this.vy);
+      if (spd > 3.5) { this.vx = (this.vx / spd) * 3.5; this.vy = (this.vy / spd) * 3.5; }
+
+      this.x += this.vx;
+      this.y += this.vy;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${C},0.9)`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < COUNT; i++) particles.push(new P());
+
+  function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < MAX_DIST) {
+          const a = (1 - dist / MAX_DIST) * 0.25;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(${C},${a})`;
+          ctx.lineWidth   = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    if (mouse.x !== null) {
+      particles.forEach(p => {
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < CURSOR_R) {
+          const a = (1 - dist / CURSOR_R) * 0.75;
+          ctx.beginPath();
+          ctx.moveTo(mouse.x, mouse.y);
+          ctx.lineTo(p.x, p.y);
+          ctx.strokeStyle = `rgba(${C},${a})`;
+          ctx.lineWidth   = 1;
+          ctx.stroke();
+        }
+      });
+      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 22);
+      grd.addColorStop(0, `rgba(${C},0.45)`);
+      grd.addColorStop(1, `rgba(${C},0)`);
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, 22, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${C},1)`;
+      ctx.fill();
+    }
+  }
+
+  function frame() {
+    particles.forEach(p => p.tick());
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  if (reduceMotion) { render(); } else { frame(); }
+
+  // ── Scrollspy — highlight the nav link for the section in view ──
+  const navLinks = [...document.querySelectorAll('.nav-links a')];
+  const targets  = navLinks
+    .map(a => ({ id: a.getAttribute('href').slice(1), el: document.querySelector(a.getAttribute('href')) }))
+    .filter(t => t.el);
+
+  function updateSpy() {
+    // The section whose top has most recently passed the reading line
+    const line = window.scrollY + window.innerHeight * 0.3;
+    let current = targets[0].id;
+    for (const t of targets) {
+      if (t.el.getBoundingClientRect().top + window.scrollY <= line) current = t.id;
+    }
+    // At the very bottom the last section wins, even if it's short
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
+      current = targets[targets.length - 1].id;
+    }
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  }
+
+  window.addEventListener('scroll', updateSpy, { passive: true });
+  window.addEventListener('resize', updateSpy);
+  updateSpy();
+
+  // ── Theme toggle ──
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    document.documentElement.classList.toggle('light');
+  });
+</script>
+
+</body>
+</html>
