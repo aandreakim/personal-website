@@ -175,52 +175,12 @@
 
     .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
 
-    /* ── Ticker ── */
-    .ticker {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-      padding: 0.9rem 0;
-    }
-
-    .ticker-track {
-      display: flex;
-      white-space: nowrap;
-      width: max-content;
-      animation: ticker 28s linear infinite;
-    }
-
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0 1.5rem;
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
-      color: var(--dimmer);
-      text-transform: uppercase;
-    }
-
-    .ticker-item .dot {
-      width: 3px; height: 3px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-
-    @keyframes ticker {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
     /* ── Sections — all visible, one continuous scroll ── */
     .block {
       padding: clamp(3rem, 8vh, 5rem) var(--pad);
       border-top: 1px solid var(--border);
       scroll-margin-top: 4.5rem;
     }
-
-    .block:first-of-type { border-top: none; }
 
     .block-head {
       display: flex;
@@ -389,7 +349,6 @@
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .ticker-track { animation: none; }
       *, *::before, *::after {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
@@ -428,10 +387,6 @@
     <p class="hero-sub">mapping the space between the mind and everything else.</p>
     <a href="#about" class="btn-ghost">About me</a>
   </section>
-
-  <div class="ticker">
-    <div class="ticker-track" id="ticker-track"></div>
-  </div>
 
   <section class="block" id="work">
     <div class="block-head"><span>00 /</span><h2>what</h2></div>
@@ -528,151 +483,155 @@
 </div>
 
 <script>
-  // ── Ticker ──
-  const items = [
-    'Neuroscience', 'siRNA Delivery', 'UChicago', '3D Bioprinting',
-    'Blood-Brain Barrier', 'iGEM', 'Computational Biology', 'Brain Cancer Research',
-    'Cell-Penetrating Peptides', 'Wet Lab', 'In Vitro Models', 'Gene Targeting'
-  ];
-  const track = document.getElementById('ticker-track');
-  track.innerHTML = [...items, ...items].map(t =>
-    `<span class="ticker-item"><span class="dot"></span>${t}</span>`
-  ).join('');
-
-  // ── Neural network — cursor-interactive, persists across the whole scroll ──
+  // ── Neural network — full-viewport field, cursor-interactive ──
   const canvas = document.getElementById('neural-canvas');
   const ctx    = canvas.getContext('2d');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
+  const DENSITY  = 1 / 12500;  // particles per css pixel², so density reads the same on any screen
+  const MIN_N    = 42;
+  const MAX_N    = 150;
+  const LINK_R   = 165;        // particle-to-particle link range
+  const CURSOR_R = 200;
+  const REPEL_R  = 90;
+  const EDGE     = 14;
+  const C        = [123, 130, 240];
 
-  // Canvas is fixed, so client coords map directly
-  const mouse = { x: null, y: null };
-  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-  window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-
-  const COUNT     = 28;
-  const MAX_DIST  = 110;
-  const CURSOR_R  = 180;
-  const REPEL_R   = 70;
-  const CLUSTER_R = 0.3;
-  const C         = [123, 130, 240];
+  let W = 0, H = 0;
   const particles = [];
+  const mouse = { x: null, y: null };
 
   class P {
-    constructor() { this.init(); }
-    init() {
-      const angle = Math.random() * Math.PI * 2;
-      const r     = Math.random() * Math.min(canvas.width, canvas.height) * CLUSTER_R;
-      this.x  = canvas.width  * 0.68 + Math.cos(angle) * r;
-      this.y  = canvas.height * 0.50 + Math.sin(angle) * r;
-      this.vx = (Math.random() - 0.5) * 0.42;
-      this.vy = (Math.random() - 0.5) * 0.42;
+    constructor() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.z = 0.35 + Math.random() * 0.65;   // depth — drives size, speed and opacity
+      const a = Math.random() * Math.PI * 2;
+      const s = (0.10 + Math.random() * 0.20) * this.z;
+      this.vx = Math.cos(a) * s;
+      this.vy = Math.sin(a) * s;
       this.bvx = this.vx;
       this.bvy = this.vy;
-      this.r  = Math.random() * 1.6 + 1;
+      this.r = (0.7 + Math.random() * 1.4) * this.z;
+      this.phase = Math.random() * Math.PI * 2;
     }
     tick() {
-      const cx  = canvas.width  * 0.68;
-      const cy  = canvas.height * 0.50;
-      const max = Math.min(canvas.width, canvas.height) * CLUSTER_R;
-
-      const distC = Math.hypot(this.x - cx, this.y - cy);
-      if (distC > max * 0.7) {
-        this.vx += (cx - this.x) / distC * 0.04;
-        this.vy += (cy - this.y) / distC * 0.04;
-      }
-
       if (mouse.x !== null) {
         const dx = this.x - mouse.x, dy = this.y - mouse.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < REPEL_R && dist > 0) {
-          const force = (REPEL_R - dist) / REPEL_R * 0.9;
-          this.vx += (dx / dist) * force;
-          this.vy += (dy / dist) * force;
+        const d = Math.hypot(dx, dy);
+        if (d < REPEL_R && d > 0) {
+          const f = (1 - d / REPEL_R) * 0.55 * this.z;
+          this.vx += (dx / d) * f;
+          this.vy += (dy / d) * f;
         }
       }
 
-      this.vx += (this.bvx - this.vx) * 0.025;
-      this.vy += (this.bvy - this.vy) * 0.025;
+      // ease back to the base drift so the field settles again after the cursor passes
+      this.vx += (this.bvx - this.vx) * 0.02;
+      this.vy += (this.bvy - this.vy) * 0.02;
 
-      const spd = Math.hypot(this.vx, this.vy);
-      if (spd > 3.5) { this.vx = (this.vx / spd) * 3.5; this.vy = (this.vy / spd) * 3.5; }
+      const sp  = Math.hypot(this.vx, this.vy);
+      const cap = 2.4 * this.z;
+      if (sp > cap) { this.vx = this.vx / sp * cap; this.vy = this.vy / sp * cap; }
 
       this.x += this.vx;
       this.y += this.vy;
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${C},0.9)`;
-      ctx.fill();
+
+      // reflect at the edges — wrapping would snap links across the screen
+      if (this.x < EDGE)     { this.x = EDGE;     this.vx =  Math.abs(this.vx); this.bvx =  Math.abs(this.bvx); }
+      if (this.x > W - EDGE) { this.x = W - EDGE; this.vx = -Math.abs(this.vx); this.bvx = -Math.abs(this.bvx); }
+      if (this.y < EDGE)     { this.y = EDGE;     this.vy =  Math.abs(this.vy); this.bvy =  Math.abs(this.bvy); }
+      if (this.y > H - EDGE) { this.y = H - EDGE; this.vy = -Math.abs(this.vy); this.bvy = -Math.abs(this.bvy); }
     }
   }
 
-  for (let i = 0; i < COUNT; i++) particles.push(new P());
+  function resize() {
+    const pw = W, ph = H;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // carry the existing field across a resize rather than reshuffling it
+    if (pw && ph) {
+      const sx = W / pw, sy = H / ph;
+      particles.forEach(p => { p.x *= sx; p.y *= sy; });
+    }
+
+    const n = Math.round(Math.min(MAX_N, Math.max(MIN_N, W * H * DENSITY)));
+    while (particles.length < n) particles.push(new P());
+    while (particles.length > n) particles.pop();
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  // canvas is fixed, so client coords map straight onto it
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+  function render(t) {
+    ctx.clearRect(0, 0, W, H);
 
     for (let i = 0; i < particles.length; i++) {
+      const a = particles[i];
       for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < MAX_DIST) {
-          const a = (1 - dist / MAX_DIST) * 0.25;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(${C},${a})`;
-          ctx.lineWidth   = 0.6;
-          ctx.stroke();
-        }
+        const b = particles[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        if (Math.abs(dx) > LINK_R || Math.abs(dy) > LINK_R) continue;
+        const d = Math.hypot(dx, dy);
+        if (d >= LINK_R) continue;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(${C},${(1 - d / LINK_R) * 0.28 * Math.min(a.z, b.z)})`;
+        ctx.lineWidth   = 0.6;
+        ctx.stroke();
       }
     }
 
     if (mouse.x !== null) {
       particles.forEach(p => {
-        const dx = p.x - mouse.x, dy = p.y - mouse.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < CURSOR_R) {
-          const a = (1 - dist / CURSOR_R) * 0.75;
-          ctx.beginPath();
-          ctx.moveTo(mouse.x, mouse.y);
-          ctx.lineTo(p.x, p.y);
-          ctx.strokeStyle = `rgba(${C},${a})`;
-          ctx.lineWidth   = 1;
-          ctx.stroke();
-        }
+        const d = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+        if (d >= CURSOR_R) return;
+        ctx.beginPath();
+        ctx.moveTo(mouse.x, mouse.y);
+        ctx.lineTo(p.x, p.y);
+        ctx.strokeStyle = `rgba(${C},${(1 - d / CURSOR_R) * 0.55})`;
+        ctx.lineWidth   = 0.9;
+        ctx.stroke();
       });
-      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 22);
-      grd.addColorStop(0, `rgba(${C},0.45)`);
+
+      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 26);
+      grd.addColorStop(0, `rgba(${C},0.32)`);
       grd.addColorStop(1, `rgba(${C},0)`);
       ctx.beginPath();
-      ctx.arc(mouse.x, mouse.y, 22, 0, Math.PI * 2);
+      ctx.arc(mouse.x, mouse.y, 26, 0, Math.PI * 2);
       ctx.fillStyle = grd;
       ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(mouse.x, mouse.y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${C},1)`;
-      ctx.fill();
     }
+
+    particles.forEach(p => {
+      // slow twinkle so the field breathes instead of sitting flat
+      const tw = reduceMotion ? 1 : 0.82 + 0.18 * Math.sin(t / 1400 + p.phase);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${C},${(0.24 + 0.48 * p.z) * tw})`;
+      ctx.fill();
+    });
   }
 
-  function frame() {
+  function frame(t) {
     particles.forEach(p => p.tick());
-    render();
+    render(t);
     requestAnimationFrame(frame);
   }
 
-  if (reduceMotion) { render(); } else { frame(); }
+  if (reduceMotion) render(0); else requestAnimationFrame(frame);
 
   // ── Scrollspy — highlight the nav link for the section in view ──
   const navLinks = [...document.querySelectorAll('.nav-links a')];
