@@ -7,289 +7,241 @@
   <meta name="description" content="mapping the space between the mind and everything else." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #0a0a0b;
-      --text:    #ececec;
-      --dim:     rgba(236,236,236,0.42);
-      --dimmer:  rgba(236,236,236,0.30);
-      --border:  rgba(236,236,236,0.10);
-      --accent:  #7B82F0;
-      --accent2: rgba(123,130,240,0.07);
-      --pad:     clamp(1.5rem, 6vw, 7rem);
-      --sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-
-    html.light {
-      --bg:      #fbfbf9;
-      --text:    #111112;
-      --dim:     rgba(17,17,18,0.52);
-      --dimmer:  rgba(17,17,18,0.40);
-      --border:  rgba(17,17,18,0.12);
-      --accent:  #5057d5;
-      --accent2: rgba(80,87,213,0.06);
+      --bg:     #FFFEFC;
+      --accent: #F35221;
+      --gap:    clamp(0.45rem, 1.1vw, 0.85rem);
+      --pad:    clamp(1.25rem, 3.5vw, 2.75rem);
+      --font:   'Plus Jakarta Sans', sans-serif;
+      --font-weight: 500;
+      --font-weight-strong: 600;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
+      color: var(--accent);
+      font-family: var(--font);
+      font-weight: var(--font-weight);
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
+      min-height: 100dvh;
     }
 
-    /* subtle noise grain overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.5;
+    /* ── Landing shell: header / centered stage / footer ── */
+    .landing {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr;
     }
 
-    /* ── Canvas — full-page fixed background, visible the whole scroll ── */
-    #neural-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .page { position: relative; z-index: 2; }
-
-    /* ── Nav ── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 1.5rem;
-      padding: 1.4rem var(--pad);
-      border-bottom: 1px solid var(--border);
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: blur(16px);
+      padding: var(--pad);
+      gap: 1rem;
     }
 
     .logo {
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .nav-links { display: flex; gap: 1.75rem; align-items: center; }
-
-    .nav-links a {
-      font-size: 0.8rem;
-      letter-spacing: 0.06em;
-      color: var(--dim);
+      font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+      font-weight: var(--font-weight-strong);
+      letter-spacing: -0.02em;
+      color: var(--accent);
       text-decoration: none;
-      transition: color 0.2s;
-      position: relative;
-      padding-bottom: 2px;
+      justify-self: start;
     }
 
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0;
-      width: 0; height: 1px;
-      background: var(--accent);
-      transition: width 0.25s;
-    }
-
-    .nav-links a:hover, .nav-links a.active { color: var(--text); }
-    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
-
-    #theme-toggle {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--dim);
+    nav {
       display: flex;
-      align-items: center;
-      transition: color 0.2s;
-    }
-    #theme-toggle:hover { color: var(--accent); }
-    #theme-toggle svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
-    #icon-sun { display: none; }
-    #icon-moon { display: block; }
-    html.light #icon-sun { display: block; }
-    html.light #icon-moon { display: none; }
-
-    /* ── Hero — sits in the flow, no full-viewport lock ── */
-    .hero {
-      padding: clamp(4rem, 14vh, 9rem) var(--pad) clamp(4rem, 12vh, 7rem);
-      max-width: 68rem;
+      gap: clamp(1.5rem, 5vw, 4.5rem);
+      justify-self: center;
     }
 
-    .hero-eyebrow {
-      font-size: 0.85rem;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.02em;
-    }
-
-    .hero-display {
-      font-size: clamp(2.5rem, 7.5vw, 5.5rem);
-      font-weight: 600;
-      line-height: 1.02;
-      letter-spacing: -0.045em;
-      margin-bottom: 2rem;
-    }
-
-    .hero-display em {
-      font-style: italic;
-      font-weight: 300;
-      color: var(--accent);
-    }
-
-    .hero-sub {
-      font-size: clamp(1rem, 1.6vw, 1.2rem);
-      color: var(--dim);
-      line-height: 1.55;
-      max-width: 34rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .btn-ghost {
-      font-size: 0.8rem;
+    nav a {
+      font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+      font-weight: var(--font-weight);
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--dim);
+      color: var(--accent);
       text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 3px;
-      transition: color 0.2s, border-color 0.2s;
+      transition: opacity 0.2s;
     }
 
-    .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+    nav a:hover { opacity: 0.55; }
 
-    /* ── Sections — all visible, one continuous scroll ── */
+    #clock {
+      font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+      font-weight: var(--font-weight);
+      letter-spacing: 0.06em;
+      font-variant-numeric: tabular-nums;
+      justify-self: end;
+      color: var(--accent);
+    }
+
+    /* ── Centered 3×3 cluster ── */
+    .stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 var(--pad);
+      min-height: 0;
+    }
+
+    .mosaic {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: var(--gap);
+      width: min(56vmin, 420px);
+      aspect-ratio: 1;
+    }
+
+    .mosaic a,
+    .mosaic .cell {
+      display: block;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: 50%;
+      background: transparent;
+      animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .mosaic a:nth-child(1) { animation-delay: 0.04s; }
+    .mosaic a:nth-child(2) { animation-delay: 0.09s; }
+    .mosaic a:nth-child(3) { animation-delay: 0.14s; }
+    .mosaic a:nth-child(4) { animation-delay: 0.19s; }
+    .mosaic a:nth-child(5) { animation-delay: 0.24s; }
+    .mosaic a:nth-child(6) { animation-delay: 0.29s; }
+    .mosaic a:nth-child(7) { animation-delay: 0.34s; }
+    .mosaic a:nth-child(8) { animation-delay: 0.39s; }
+    .mosaic a:nth-child(9) { animation-delay: 0.44s; }
+
+    .mosaic img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transform: scale(1.08);
+      filter: grayscale(1) contrast(1.35) brightness(1.05);
+      transition:
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.4s ease;
+    }
+
+    .mosaic a:hover img,
+    .mosaic a:focus-visible img {
+      transform: scale(1.14);
+      filter: grayscale(0) contrast(1.05) brightness(1);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── Below-fold content ── */
+    .showcase {
+      border-top: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+      background: var(--bg);
+      color: #1a1a1a;
+    }
+
     .block {
-      padding: clamp(3rem, 8vh, 5rem) var(--pad);
-      border-top: 1px solid var(--border);
-      scroll-margin-top: 4.5rem;
+      padding: clamp(3rem, 8vh, 5.5rem) var(--pad);
+      max-width: 72rem;
+      margin: 0 auto;
+      scroll-margin-top: 1rem;
+    }
+
+    .block + .block {
+      border-top: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
     }
 
     .block-head {
       display: flex;
       align-items: baseline;
-      gap: 1.25rem;
-      margin-bottom: 2.5rem;
+      gap: 1rem;
+      margin-bottom: 2rem;
     }
 
     .block-head span {
       font-size: 0.75rem;
       color: var(--accent);
-      font-variant-numeric: tabular-nums;
       letter-spacing: 0.1em;
+      font-variant-numeric: tabular-nums;
     }
 
     .block-head h2 {
-      font-size: 1rem;
-      font-weight: 500;
-      letter-spacing: 0.02em;
+      font-size: 0.85rem;
+      font-weight: var(--font-weight);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
     }
 
-    /* ── Entry list ── */
     .list { list-style: none; }
 
-    .list li { border-bottom: 1px solid var(--border); }
-    .list li:first-child { border-top: 1px solid var(--border); }
+    .list li {
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
+    .list li:first-child {
+      border-top: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
+    }
 
     .list a, .list .row {
       display: grid;
       grid-template-columns: 3rem 1fr auto;
+      gap: 1.25rem;
       align-items: start;
-      gap: 1.5rem;
-      padding: 1.6rem 0;
+      padding: 1.5rem 0;
       text-decoration: none;
       color: inherit;
-      position: relative;
     }
 
-    .list a::before {
-      content: '';
-      position: absolute;
-      left: calc(-1 * var(--pad)); right: calc(-1 * var(--pad));
-      top: 0; bottom: 0;
-      background: var(--accent2);
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-    }
-
-    .list a:hover::before { opacity: 1; }
+    .list a:hover .title { color: var(--accent); }
 
     .idx {
       font-size: 0.75rem;
       color: var(--accent);
       font-variant-numeric: tabular-nums;
-      padding-top: 0.35rem;
+      padding-top: 0.3rem;
       letter-spacing: 0.08em;
     }
 
-    .body {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      max-width: 46rem;
-    }
-
     .title {
-      font-size: clamp(1rem, 1.5vw, 1.15rem);
-      font-weight: 400;
+      font-size: clamp(1rem, 1.4vw, 1.15rem);
+      font-weight: var(--font-weight);
       line-height: 1.35;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
+      transition: color 0.2s;
     }
 
     .meta {
-      font-size: 0.8rem;
-      color: var(--dim);
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.25rem;
-    }
-
-    .tag {
-      font-size: 0.68rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--dim);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 0.2rem 0.6rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: color-mix(in srgb, #1a1a1a 55%, transparent);
+      margin-top: 0.4rem;
     }
 
     .arrow {
+      color: var(--accent);
       font-size: 0.9rem;
-      color: var(--dim);
-      padding-top: 0.3rem;
-      transition: color 0.15s, transform 0.15s;
+      padding-top: 0.25rem;
     }
 
-    .list a:hover .arrow { color: var(--accent); transform: translate(2px,-2px); }
-
-    /* ── About ── */
     .about {
       display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: clamp(2rem, 6vw, 5rem);
+      grid-template-columns: 200px 1fr;
+      gap: clamp(2rem, 5vw, 4rem);
       align-items: start;
     }
 
@@ -299,368 +251,232 @@
       object-fit: cover;
       object-position: 50% 15%;
       display: block;
-      filter: grayscale(15%);
-      background: rgba(236,236,236,0.05);
     }
 
     .about h3 {
       font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 500;
+      font-weight: var(--font-weight-strong);
       line-height: 1;
       letter-spacing: -0.04em;
-      margin-bottom: 1.25rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
     }
 
     .affil {
       font-size: 0.9rem;
-      color: var(--dim);
-      margin-bottom: 1.5rem;
+      font-weight: 500;
+      color: color-mix(in srgb, #1a1a1a 55%, transparent);
+      margin-bottom: 1.25rem;
     }
 
     .bio {
-      line-height: 1.7;
-      color: var(--dim);
+      line-height: 1.65;
+      font-weight: 500;
       max-width: 32rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
+      color: color-mix(in srgb, #1a1a1a 72%, transparent);
     }
 
     .links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 
     .links a {
-      font-size: 0.85rem;
-      color: var(--dim);
+      font-size: 0.8rem;
+      font-weight: var(--font-weight);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
       text-decoration: none;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
       padding-bottom: 2px;
-      transition: color 0.2s, border-color 0.2s;
+      transition: border-color 0.2s;
     }
 
-    .links a:hover { color: var(--text); border-color: var(--accent); }
+    .links a:hover { border-color: var(--accent); }
 
-    /* ── Responsive ── */
     @media (max-width: 640px) {
-      .list a, .list .row { grid-template-columns: 2rem 1fr auto; gap: 1rem; }
+      header {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+      }
+      .logo { grid-column: 1; }
+      #clock { grid-column: 2; }
+      nav {
+        grid-column: 1 / -1;
+        justify-self: start;
+        gap: 1.25rem;
+        margin-top: 0.35rem;
+      }
+      .mosaic { width: min(78vw, 340px); }
       .about { grid-template-columns: 1fr; }
-      .about-photo { max-width: 220px; }
-      .nav-links { gap: 1rem; }
-      .nav-links a { font-size: 0.75rem; }
-      .logo { font-size: 0.7rem; }
+      .about-photo { max-width: 200px; }
+      .list a, .list .row { grid-template-columns: 2rem 1fr auto; gap: 0.85rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      *, *::before, *::after {
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
+      .mosaic a, .mosaic .cell { animation: none; }
+      .mosaic img {
+        transform: scale(1.08);
+        transition: filter 0.01ms;
       }
+      .mosaic a:hover img,
+      .mosaic a:focus-visible img { transform: scale(1.08); }
     }
   </style>
 </head>
 <body>
 
-<!-- Full-page neural network canvas -->
-<canvas id="neural-canvas"></canvas>
+  <div class="landing">
+    <header>
+      <a class="logo" href="#">ANDREA KIM</a>
+      <nav>
+        <a href="#who">who</a>
+        <a href="#what">what</a>
+        <a href="#why">why</a>
+      </nav>
+      <time id="clock" datetime=""></time>
+    </header>
 
-<div class="page">
-
-  <nav>
-    <div class="logo">ANDREA KIM</div>
-    <div class="nav-links">
-      <a href="#hero" class="active">Home</a>
-      <a href="#work">what</a>
-      <a href="#research">where</a>
-      <a href="#about">who</a>
-      <button id="theme-toggle" aria-label="Toggle theme">
-        <svg id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-    </div>
-  </nav>
-
-  <section class="hero" id="hero">
-    <div class="hero-eyebrow">hi, i'm</div>
-    <h1 class="hero-display">
-      building tools that<br>
-      <em>speak</em> the brain's<br>
-      language.
-    </h1>
-    <p class="hero-sub">mapping the space between the mind and everything else.</p>
-    <a href="#about" class="btn-ghost">About me</a>
-  </section>
-
-  <section class="block" id="work">
-    <div class="block-head"><span>00 /</span><h2>what</h2></div>
-    <ul class="list">
-      <li>
-        <a href="https://past.the-iyrc.org/kim-andrea.html" target="_blank" rel="noopener">
-          <span class="idx">00</span>
-          <span class="body">
-            <span class="title">Targeting TNFRSF1A Gene by siRNA Efficiently Blocks Extracranial Metastasis of Brain Cancer in 3D Bioprinted Tissue Model</span>
-            <span class="meta">International Young Researchers' Conference</span>
-            <span class="tags"><span class="tag">siRNA</span><span class="tag">3D Bioprinting</span><span class="tag">Brain Cancer</span></span>
-          </span>
-          <span class="arrow">↗</span>
+    <main class="stage" aria-label="Featured work">
+      <div class="mosaic">
+        <a href="#what" aria-label="Microscopy sample 1">
+          <img src="./images/mosaic/cell-01.jpg?v=6" alt="Tissue under microscope" loading="eager">
         </a>
-      </li>
-      <li>
-        <a href="https://doi.org/10.59720/22-168" target="_blank" rel="noopener">
-          <span class="idx">01</span>
-          <span class="body">
-            <span class="title">A Novel In Vitro Blood-Brain Barrier Model Using 3D Bioprinter: A Pilot Study</span>
-            <span class="meta">Journal of Emerging Investigators, Vol. 6</span>
-            <span class="tags"><span class="tag">3D Bioprinting</span><span class="tag">Blood-Brain Barrier</span><span class="tag">In Vitro Model</span></span>
-          </span>
-          <span class="arrow">↗</span>
+        <a href="#what" aria-label="Microscopy sample 2">
+          <img src="./images/mosaic/cell-02.jpg?v=6" alt="Plant cells under microscope" loading="eager">
         </a>
-      </li>
-      <li>
-        <a href="https://drive.google.com/file/d/18Pggf3LcEnsNtQ8QqrCQmpPiMJpRXLl9/view?usp=sharing" target="_blank" rel="noopener">
-          <span class="idx">02</span>
-          <span class="body">
-            <span class="title">Designing a Cancer-Specific Cell-Penetrating Peptide for the Efficient Delivery of siRNA into Cancer Cells</span>
-            <span class="meta">iGEM 2021</span>
-            <span class="tags"><span class="tag">siRNA Delivery</span><span class="tag">Cell-Penetrating Peptide</span><span class="tag">Cancer Biology</span></span>
-          </span>
-          <span class="arrow">↗</span>
+        <a href="#who" aria-label="Microscopy sample 3">
+          <img src="./images/mosaic/cell-03.jpg?v=6" alt="Tissue under microscope" loading="eager">
         </a>
-      </li>
-    </ul>
-  </section>
+        <a href="#why" aria-label="Microscopy sample 4">
+          <img src="./images/mosaic/cell-04.jpg?v=5" alt="Stem cross-section under microscope" loading="eager">
+        </a>
+        <a href="#what" aria-label="Microscopy sample 5">
+          <img src="./images/mosaic/cell-05.jpg?v=5" alt="Fluorescent neuron under microscope" loading="eager">
+        </a>
+        <a href="#what" aria-label="Microscopy sample 6">
+          <img src="./images/mosaic/cell-06.jpg?v=4" alt="Tissue section under microscope" loading="eager">
+        </a>
+        <a href="#why" aria-label="Microscopy sample 7">
+          <img src="./images/mosaic/cell-07.jpg?v=8" alt="Heart-shaped tissue under microscope" loading="eager">
+        </a>
+        <a href="#what" aria-label="Microscopy sample 8">
+          <img src="./images/mosaic/cell-08.jpg?v=5" alt="Blue stained tissue under microscope" loading="eager">
+        </a>
+        <a href="#who" aria-label="Microscopy sample 9">
+          <img src="./images/mosaic/cell-09.jpg?v=7" alt="Mitotic spindle under fluorescence microscope" loading="eager">
+        </a>
+      </div>
+    </main>
+  </div>
 
-  <section class="block" id="research">
-    <div class="block-head"><span>01 /</span><h2>where</h2></div>
-    <ul class="list">
-      <li>
-        <div class="row">
-          <span class="idx">00</span>
-          <span class="body">
-            <span class="title">GeneHackers — UChicago iGEM</span>
-            <span class="meta">Wet Lab Researcher</span>
-          </span>
-          <span></span>
-        </div>
-      </li>
-      <li>
-        <div class="row">
-          <span class="idx">01</span>
-          <span class="body">
-            <span class="title">Tian Research Group</span>
-            <span class="meta">Computational Researcher</span>
-          </span>
-          <span></span>
-        </div>
-      </li>
-      <li>
-        <div class="row">
-          <span class="idx">02</span>
-          <span class="body">
-            <span class="title">University of Suwon</span>
-            <span class="meta">Wet Lab Researcher</span>
-          </span>
-          <span></span>
-        </div>
-      </li>
-    </ul>
-  </section>
+  <div class="showcase">
+    <section class="block" id="what">
+      <div class="block-head"><span>00 /</span><h2>what</h2></div>
+      <ul class="list">
+        <li>
+          <a href="https://past.the-iyrc.org/kim-andrea.html" target="_blank" rel="noopener">
+            <span class="idx">00</span>
+            <span>
+              <span class="title">Targeting TNFRSF1A Gene by siRNA Efficiently Blocks Extracranial Metastasis of Brain Cancer in 3D Bioprinted Tissue Model</span>
+              <p class="meta">International Young Researchers' Conference</p>
+            </span>
+            <span class="arrow">↗</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://doi.org/10.59720/22-168" target="_blank" rel="noopener">
+            <span class="idx">01</span>
+            <span>
+              <span class="title">A Novel In Vitro Blood-Brain Barrier Model Using 3D Bioprinter: A Pilot Study</span>
+              <p class="meta">Journal of Emerging Investigators, Vol. 6</p>
+            </span>
+            <span class="arrow">↗</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://drive.google.com/file/d/18Pggf3LcEnsNtQ8QqrCQmpPiMJpRXLl9/view?usp=sharing" target="_blank" rel="noopener">
+            <span class="idx">02</span>
+            <span>
+              <span class="title">Designing a Cancer-Specific Cell-Penetrating Peptide for the Efficient Delivery of siRNA into Cancer Cells</span>
+              <p class="meta">iGEM 2021</p>
+            </span>
+            <span class="arrow">↗</span>
+          </a>
+        </li>
+      </ul>
+    </section>
 
-  <section class="block" id="about">
-    <div class="block-head"><span>02 /</span><h2>who</h2></div>
-    <div class="about">
-      <img class="about-photo" src="./images/photo.jpg" alt="Andrea Kim">
-      <div>
-        <h3>Andrea<br>Kim</h3>
-        <p class="affil">neuroscience &amp; computational biology @ uchicago</p>
-        <p class="bio">mapping the space between the mind and everything else. building tools to listen to the brain and speak its language.</p>
-        <div class="links">
-          <a href="mailto:andreakim@uchicago.edu">Email</a>
-          <a href="https://www.linkedin.com/in/andrea-kim-383b08259/" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://github.com/aandreakim" target="_blank" rel="noopener">GitHub</a>
+    <section class="block" id="why">
+      <div class="block-head"><span>01 /</span><h2>why</h2></div>
+      <ul class="list">
+        <li>
+          <div class="row">
+            <span class="idx">00</span>
+            <span>
+              <span class="title">GeneHackers — UChicago iGEM</span>
+              <p class="meta">Wet Lab Researcher</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <span class="idx">01</span>
+            <span>
+              <span class="title">Tian Research Group</span>
+              <p class="meta">Computational Researcher</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <span class="idx">02</span>
+            <span>
+              <span class="title">University of Suwon</span>
+              <p class="meta">Wet Lab Researcher</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="block" id="who">
+      <div class="block-head"><span>02 /</span><h2>who</h2></div>
+      <div class="about">
+        <img class="about-photo" src="./images/photo.jpg" alt="Andrea Kim">
+        <div>
+          <h3>Andrea Kim</h3>
+          <p class="affil">neuroscience &amp; computational biology @ uchicago</p>
+          <p class="bio">mapping the space between the mind and everything else. building tools to listen to the brain and speak its language.</p>
+          <div class="links">
+            <a href="mailto:andreakim@uchicago.edu">Email</a>
+            <a href="https://www.linkedin.com/in/andrea-kim-383b08259/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://github.com/aandreakim" target="_blank" rel="noopener">GitHub</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-
-</div>
+    </section>
+  </div>
 
 <script>
-  // ── Neural network — full-viewport field, cursor-interactive ──
-  const canvas = document.getElementById('neural-canvas');
-  const ctx    = canvas.getContext('2d');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clockEl = document.getElementById('clock');
 
-  const DENSITY  = 1 / 12500;  // particles per css pixel², so density reads the same on any screen
-  const MIN_N    = 42;
-  const MAX_N    = 150;
-  const LINK_R   = 165;        // particle-to-particle link range
-  const CURSOR_R = 200;
-  const REPEL_R  = 90;
-  const EDGE     = 14;
-  const C        = [123, 130, 240];
-
-  let W = 0, H = 0;
-  const particles = [];
-  const mouse = { x: null, y: null };
-
-  class P {
-    constructor() {
-      this.x = Math.random() * W;
-      this.y = Math.random() * H;
-      this.z = 0.35 + Math.random() * 0.65;   // depth — drives size, speed and opacity
-      const a = Math.random() * Math.PI * 2;
-      const s = (0.10 + Math.random() * 0.20) * this.z;
-      this.vx = Math.cos(a) * s;
-      this.vy = Math.sin(a) * s;
-      this.bvx = this.vx;
-      this.bvy = this.vy;
-      this.r = (0.7 + Math.random() * 1.4) * this.z;
-      this.phase = Math.random() * Math.PI * 2;
-    }
-    tick() {
-      if (mouse.x !== null) {
-        const dx = this.x - mouse.x, dy = this.y - mouse.y;
-        const d = Math.hypot(dx, dy);
-        if (d < REPEL_R && d > 0) {
-          const f = (1 - d / REPEL_R) * 0.55 * this.z;
-          this.vx += (dx / d) * f;
-          this.vy += (dy / d) * f;
-        }
-      }
-
-      // ease back to the base drift so the field settles again after the cursor passes
-      this.vx += (this.bvx - this.vx) * 0.02;
-      this.vy += (this.bvy - this.vy) * 0.02;
-
-      const sp  = Math.hypot(this.vx, this.vy);
-      const cap = 2.4 * this.z;
-      if (sp > cap) { this.vx = this.vx / sp * cap; this.vy = this.vy / sp * cap; }
-
-      this.x += this.vx;
-      this.y += this.vy;
-
-      // reflect at the edges — wrapping would snap links across the screen
-      if (this.x < EDGE)     { this.x = EDGE;     this.vx =  Math.abs(this.vx); this.bvx =  Math.abs(this.bvx); }
-      if (this.x > W - EDGE) { this.x = W - EDGE; this.vx = -Math.abs(this.vx); this.bvx = -Math.abs(this.bvx); }
-      if (this.y < EDGE)     { this.y = EDGE;     this.vy =  Math.abs(this.vy); this.bvy =  Math.abs(this.bvy); }
-      if (this.y > H - EDGE) { this.y = H - EDGE; this.vy = -Math.abs(this.vy); this.bvy = -Math.abs(this.bvy); }
-    }
+  function tickClock() {
+    const now = new Date();
+    let h = now.getHours();
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    const label = h + ':' + m + ampm;
+    clockEl.textContent = label;
+    clockEl.setAttribute('datetime', now.toISOString());
   }
 
-  function resize() {
-    const pw = W, ph = H;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width  = Math.round(W * dpr);
-    canvas.height = Math.round(H * dpr);
-    canvas.style.width  = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    // carry the existing field across a resize rather than reshuffling it
-    if (pw && ph) {
-      const sx = W / pw, sy = H / ph;
-      particles.forEach(p => { p.x *= sx; p.y *= sy; });
-    }
-
-    const n = Math.round(Math.min(MAX_N, Math.max(MIN_N, W * H * DENSITY)));
-    while (particles.length < n) particles.push(new P());
-    while (particles.length > n) particles.pop();
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-
-  // canvas is fixed, so client coords map straight onto it
-  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-  window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-
-  function render(t) {
-    ctx.clearRect(0, 0, W, H);
-
-    for (let i = 0; i < particles.length; i++) {
-      const a = particles[i];
-      for (let j = i + 1; j < particles.length; j++) {
-        const b = particles[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        if (Math.abs(dx) > LINK_R || Math.abs(dy) > LINK_R) continue;
-        const d = Math.hypot(dx, dy);
-        if (d >= LINK_R) continue;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = `rgba(${C},${(1 - d / LINK_R) * 0.28 * Math.min(a.z, b.z)})`;
-        ctx.lineWidth   = 0.6;
-        ctx.stroke();
-      }
-    }
-
-    if (mouse.x !== null) {
-      particles.forEach(p => {
-        const d = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-        if (d >= CURSOR_R) return;
-        ctx.beginPath();
-        ctx.moveTo(mouse.x, mouse.y);
-        ctx.lineTo(p.x, p.y);
-        ctx.strokeStyle = `rgba(${C},${(1 - d / CURSOR_R) * 0.55})`;
-        ctx.lineWidth   = 0.9;
-        ctx.stroke();
-      });
-
-      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 26);
-      grd.addColorStop(0, `rgba(${C},0.32)`);
-      grd.addColorStop(1, `rgba(${C},0)`);
-      ctx.beginPath();
-      ctx.arc(mouse.x, mouse.y, 26, 0, Math.PI * 2);
-      ctx.fillStyle = grd;
-      ctx.fill();
-    }
-
-    particles.forEach(p => {
-      // slow twinkle so the field breathes instead of sitting flat
-      const tw = reduceMotion ? 1 : 0.82 + 0.18 * Math.sin(t / 1400 + p.phase);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${C},${(0.24 + 0.48 * p.z) * tw})`;
-      ctx.fill();
-    });
-  }
-
-  function frame(t) {
-    particles.forEach(p => p.tick());
-    render(t);
-    requestAnimationFrame(frame);
-  }
-
-  if (reduceMotion) render(0); else requestAnimationFrame(frame);
-
-  // ── Scrollspy — highlight the nav link for the section in view ──
-  const navLinks = [...document.querySelectorAll('.nav-links a')];
-  const targets  = navLinks
-    .map(a => ({ id: a.getAttribute('href').slice(1), el: document.querySelector(a.getAttribute('href')) }))
-    .filter(t => t.el);
-
-  function updateSpy() {
-    // The section whose top has most recently passed the reading line
-    const line = window.scrollY + window.innerHeight * 0.3;
-    let current = targets[0].id;
-    for (const t of targets) {
-      if (t.el.getBoundingClientRect().top + window.scrollY <= line) current = t.id;
-    }
-    // At the very bottom the last section wins, even if it's short
-    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
-      current = targets[targets.length - 1].id;
-    }
-    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
-  }
-
-  window.addEventListener('scroll', updateSpy, { passive: true });
-  window.addEventListener('resize', updateSpy);
-  updateSpy();
-
-  // ── Theme toggle ──
-  document.getElementById('theme-toggle').addEventListener('click', () => {
-    document.documentElement.classList.toggle('light');
-  });
+  tickClock();
+  setInterval(tickClock, 1000);
 </script>
 
 </body>
