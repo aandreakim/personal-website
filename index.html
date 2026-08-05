@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Andrea Kim</title>
   <meta name="description" content="mapping the space between the mind and everything else." />
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600&display=swap" rel="stylesheet">
@@ -172,11 +175,35 @@
       margin-bottom: 2rem;
     }
 
-    .block-head span {
-      font-size: 0.75rem;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      font-variant-numeric: tabular-nums;
+    .lede {
+      font-weight: 500;
+      line-height: 1.55;
+      color: #1a1a1a;
+      margin: -0.75rem 0 2rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      font-weight: var(--font-weight-strong);
+      letter-spacing: -0.01em;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle + .list + .subtitle {
+      margin-top: 2.5rem;
+    }
+
+    .group-label {
+      font-size: 0.9rem;
+      font-weight: var(--font-weight);
+      letter-spacing: 0.02em;
+      color: color-mix(in srgb, #1a1a1a 55%, transparent);
+      margin: 1.75rem 0 0.75rem;
+    }
+
+    .subtitle + .group-label {
+      margin-top: 0.15rem;
     }
 
     .block-head h2 {
@@ -272,10 +299,11 @@
     .bio {
       line-height: 1.65;
       font-weight: 500;
-      max-width: 32rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1rem;
       color: color-mix(in srgb, #1a1a1a 72%, transparent);
     }
+
+    .bio:last-of-type { margin-bottom: 1.75rem; }
 
     .links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 
@@ -371,12 +399,31 @@
   </div>
 
   <div class="showcase">
+    <section class="block" id="who">
+      <div class="block-head"><h2>who</h2></div>
+      <div class="about">
+        <img class="about-photo" src="./images/photo.jpg" alt="Andrea Kim">
+        <div>
+          <h3>Andrea Kim</h3>
+          <p class="affil">neuroscience &amp; computational biology @ uchicago</p>
+          <p class="bio">Hi, my name is Andrea Kim. I grew up between Seoul, South Korea, and Singapore, but I live in Chicago now. I’m a student at the University of Chicago, double-majoring in Neuroscience and Computational Biology.</p>
+          <p class="bio">I try to find joy in all things in life, but some things I find joy more easily in are: Brewing coffee, Lifting weights, Jazz music, Culinary art, Conversation, and Sunlight.</p>
+          <div class="links">
+            <a href="mailto:andreakim@uchicago.edu">Email</a>
+            <a href="https://www.linkedin.com/in/andrea-kim-383b08259/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://github.com/aandreakim" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="block" id="what">
-      <div class="block-head"><span>00 /</span><h2>what</h2></div>
+      <div class="block-head"><h2>what</h2></div>
+      <h3 class="subtitle">Research</h3>
       <ul class="list">
         <li>
           <a href="https://past.the-iyrc.org/kim-andrea.html" target="_blank" rel="noopener">
-            <span class="idx">00</span>
+            <span class="idx">02</span>
             <span>
               <span class="title">Targeting TNFRSF1A Gene by siRNA Efficiently Blocks Extracranial Metastasis of Brain Cancer in 3D Bioprinted Tissue Model</span>
               <p class="meta">International Young Researchers' Conference</p>
@@ -396,7 +443,7 @@
         </li>
         <li>
           <a href="https://drive.google.com/file/d/18Pggf3LcEnsNtQ8QqrCQmpPiMJpRXLl9/view?usp=sharing" target="_blank" rel="noopener">
-            <span class="idx">02</span>
+            <span class="idx">00</span>
             <span>
               <span class="title">Designing a Cancer-Specific Cell-Penetrating Peptide for the Efficient Delivery of siRNA into Cancer Cells</span>
               <p class="meta">iGEM 2021</p>
@@ -405,27 +452,15 @@
           </a>
         </li>
       </ul>
-    </section>
-
-    <section class="block" id="why">
-      <div class="block-head"><span>01 /</span><h2>why</h2></div>
+      <h3 class="subtitle">Roles</h3>
+      <h4 class="group-label">Research</h4>
       <ul class="list">
         <li>
           <div class="row">
-            <span class="idx">00</span>
+            <span class="idx">03</span>
             <span>
-              <span class="title">GeneHackers — UChicago iGEM</span>
-              <p class="meta">Wet Lab Researcher</p>
-            </span>
-            <span></span>
-          </div>
-        </li>
-        <li>
-          <div class="row">
-            <span class="idx">01</span>
-            <span>
-              <span class="title">Tian Research Group</span>
-              <p class="meta">Computational Researcher</p>
+              <span class="title">Xiong Group, ShanghaiTech University</span>
+              <p class="meta">Computational researcher</p>
             </span>
             <span></span>
           </div>
@@ -434,8 +469,61 @@
           <div class="row">
             <span class="idx">02</span>
             <span>
-              <span class="title">University of Suwon</span>
-              <p class="meta">Wet Lab Researcher</p>
+              <span class="title">Tian Research Group, University of Chicago</span>
+              <p class="meta">Computational researcher</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <span class="idx">01</span>
+            <span>
+              <span class="title">GeneHackers, UChicago iGEM Team</span>
+              <p class="meta">Dry Lab lead</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <span class="idx">00</span>
+            <span>
+              <span class="title">Lee Lab, University of Suwon</span>
+              <p class="meta">Wet Lab researcher</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+      </ul>
+      <h4 class="group-label">Entrepreneurship</h4>
+      <ul class="list">
+        <li>
+          <div class="row">
+            <span class="idx">02</span>
+            <span>
+              <span class="title">E0 Labs</span>
+              <p class="meta">Co-Founder</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <span class="idx">01</span>
+            <span>
+              <span class="title">Entrepreneurs First</span>
+              <p class="meta">Investment Fellow</p>
+            </span>
+            <span></span>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <span class="idx">00</span>
+            <span>
+              <span class="title">TOPO (backed by Google, OpenAI, Khosla)</span>
+              <p class="meta">Growth Intern</p>
             </span>
             <span></span>
           </div>
@@ -443,40 +531,87 @@
       </ul>
     </section>
 
-    <section class="block" id="who">
-      <div class="block-head"><span>02 /</span><h2>who</h2></div>
-      <div class="about">
-        <img class="about-photo" src="./images/photo.jpg" alt="Andrea Kim">
-        <div>
-          <h3>Andrea Kim</h3>
-          <p class="affil">neuroscience &amp; computational biology @ uchicago</p>
-          <p class="bio">mapping the space between the mind and everything else. building tools to listen to the brain and speak its language.</p>
-          <div class="links">
-            <a href="mailto:andreakim@uchicago.edu">Email</a>
-            <a href="https://www.linkedin.com/in/andrea-kim-383b08259/" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="https://github.com/aandreakim" target="_blank" rel="noopener">GitHub</a>
-          </div>
-        </div>
-      </div>
+    <section class="block" id="why">
+      <div class="block-head"><h2>why</h2></div>
+      <p class="lede">My life’s work is to create neurotechnology for everyone. I hope to make it easy, accessible, and integral.</p>
     </section>
   </div>
 
 <script>
   const clockEl = document.getElementById('clock');
+  let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+
+  function formatClock(date) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: userTimeZone,
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).formatToParts(date);
+
+    const get = (type) => parts.find(p => p.type === type)?.value || '';
+    const hour = get('hour');
+    const minute = get('minute');
+    const dayPeriod = (get('dayPeriod') || '').toUpperCase();
+    return hour + ':' + minute + dayPeriod;
+  }
 
   function tickClock() {
     const now = new Date();
-    let h = now.getHours();
-    const m = now.getMinutes().toString().padStart(2, '0');
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12 || 12;
-    const label = h + ':' + m + ampm;
-    clockEl.textContent = label;
+    clockEl.textContent = formatClock(now);
     clockEl.setAttribute('datetime', now.toISOString());
+    clockEl.title = userTimeZone.replace(/_/g, ' ');
+  }
+
+  async function resolveTimeZoneFromCoords(lat, lon) {
+    const res = await fetch(
+      'https://timeapi.io/api/timezone/coordinate?latitude=' +
+        encodeURIComponent(lat) +
+        '&longitude=' +
+        encodeURIComponent(lon)
+    );
+    if (!res.ok) throw new Error('timezone lookup failed');
+    const data = await res.json();
+    return data.timeZone || data.timezone;
+  }
+
+  async function detectUserTimeZone() {
+    // 1) IP-based geolocation → timezone (no permission prompt)
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.timezone) {
+          userTimeZone = data.timezone;
+          tickClock();
+        }
+      }
+    } catch (_) { /* keep Intl fallback */ }
+
+    // 2) Refine with device geolocation when the user allows it
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const tz = await resolveTimeZoneFromCoords(
+            pos.coords.latitude,
+            pos.coords.longitude
+          );
+          if (tz) {
+            userTimeZone = tz;
+            tickClock();
+          }
+        } catch (_) { /* keep current timezone */ }
+      },
+      () => { /* denied / unavailable — keep IP or Intl timezone */ },
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+    );
   }
 
   tickClock();
   setInterval(tickClock, 1000);
+  detectUserTimeZone();
 </script>
 
 </body>

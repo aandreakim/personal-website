@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="50" fill="#F35221"/>
+  <!-- Bold A optically centered in the circle -->
+  <path
+    fill="#FFFFFF"
+    fill-rule="evenodd"
+    transform="translate(0 2)"
+    d="
+      M 50 18
+      L 78 82
+      H 65.5
+      L 59.2 62
+      H 40.8
+      L 34.5 82
+      H 22
+      Z
+      M 50 34
+      L 56.8 54
+      H 43.2
+      Z
+    "
+  />
+</svg>
